@@ -1,9 +1,11 @@
 package com.ex.faarevisoes;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdapter.MyViewHolder> {
     Context context;
     ArrayList<Events> arrayList;
-
+    DBOpenHelper dbOpenHelper;
     public EventRecyclerAdapter(Context context, ArrayList<Events> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
@@ -29,12 +31,20 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
 
-        Events events = arrayList.get(position);
+        final Events events = arrayList.get(position);
         holder.Event.setText(events.getEVENT());
         holder.Time.setText(events.getTIME());
         holder.Date.setText(events.getDATE());
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {// Deleta
+                deleteCalendarEvent(events.getEVENT(),events.getDATE(),events.getTIME());
+                arrayList.remove(position);
+                notifyDataSetChanged();
+            }
+        });
 
     }
 
@@ -46,12 +56,21 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView Event,Date,Time;
+        Button delete;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             Event = itemView.findViewById(R.id.eventname);
             Date = itemView.findViewById(R.id.eventdate);
             Time   = itemView.findViewById(R.id.eventtime);
+            delete = itemView.findViewById(R.id.delete);
         }
+    }
+    private  void deleteCalendarEvent(String event,String date,String time){
+        dbOpenHelper = new DBOpenHelper(context);
+        SQLiteDatabase database= dbOpenHelper.getWritableDatabase();
+        dbOpenHelper.deleteEvent(event,date,time,database);
+        dbOpenHelper.close();
+
     }
 }
