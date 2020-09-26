@@ -47,8 +47,16 @@
                 android:text="Time"
                 android:textSize="20dp"
                 />
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/alarmBtn"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_notification_off"
+                android:background="@color/colorPrimaryDark">
 
-
+            </ImageButton>
 
 
             <Button
